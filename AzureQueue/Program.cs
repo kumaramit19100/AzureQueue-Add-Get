@@ -10,19 +10,24 @@ namespace AzureQueue
         public static string QueueName = "task-1";
         static void Main(string[] args)
         {
-            Console.WriteLine("Select '1' for Add Message or Select '2' for Get Message");
+            Console.WriteLine("Select '1' for Add Message\nSelect '2' for Get Message\nSelect '3' for Delete Messgae from Queue");
             int a = Convert.ToInt32(Console.ReadLine());
             if (a == 1)
             {
-                Console.WriteLine("You Have Selected for Add Message!!!");
+                Console.WriteLine("You are Selected for Add Message!!!");
                 AddMessgae();
             }
             if (a == 2)
             {
-                Console.WriteLine("You Have Selected for Get Message!!!");
+                Console.WriteLine("You are Selected for Get Message!!!");
                 Console.WriteLine();
                 GetMessage();
-            }            
+            }
+            if (a == 3)
+            {
+                Console.WriteLine("You are selected for Delete Message ");
+                DeleteMessage();
+            }
             Console.ReadKey();
         }
         public static void AddMessgae()
@@ -53,6 +58,23 @@ namespace AzureQueue
             if (queueMessage != null)
             {
                 Console.WriteLine(queueMessage.AsString);
+            }
+            else
+            {
+                Console.WriteLine("Queue is Empty");
+            }
+        }
+
+        public static void DeleteMessage()
+        {
+            CloudStorageAccount cls = CloudStorageAccount.Parse(ConnectionString);
+            CloudQueueClient queueClient = cls.CreateCloudQueueClient();
+            CloudQueue cloudQueue = queueClient.GetQueueReference(QueueName);
+            CloudQueueMessage queueMessage = cloudQueue.GetMessage();
+            if (queueMessage != null)
+            {
+                Console.WriteLine("This Message are Deleted : "+queueMessage.AsString);
+                cloudQueue.DeleteMessage(queueMessage.Id, queueMessage.PopReceipt);
             }
             else
             {
